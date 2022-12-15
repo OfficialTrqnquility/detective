@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a069e5c6-c558-46ca-a701-43b6a8db1337" name="Changes" comment="initial commit.">
+      <change afterPath="$PROJECT_DIR$/data/clean/144060a1-efaa-4952-b0b3-8f1a4667afe2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/clean/6712d544-c65f-44cc-9dfb-2ddeae060fcd.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/clean/80145adb-2efb-42fe-8939-08e604f1c2ca.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/clean/d82c572a-e067-48b8-9b7e-3ce0677aa845.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/motion/clean/6712d544-c65f-44cc-9dfb-2ddeae060fcd.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/data/MovementDataSet.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/converter/JsonConverter.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/converter/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/scanner/FileScanner.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/scanner/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/detective.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/detective.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/converter/JsonConverter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/converter/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/configuration/configuration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/dataset/MovementDataSet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scanner/FileScanner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scanner/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/model.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2IJsf4DtOKdfV2TNNrRZfizlIHx" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Alexander/PycharmProjects/detective/data&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Alexander\PycharmProjects\detective\data" />
+      <recent name="C:\Users\Alexander\PycharmProjects\detective\data\motion\clean" />
+      <recent name="C:\Users\Alexander\PycharmProjects\detective" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Alexander\PycharmProjects\detective\utils\converter" />
+      <recent name="C:\Users\Alexander\PycharmProjects\detective\utils\scanner" />
+      <recent name="C:\Users\Alexander\PycharmProjects\detective\data\motion\clean" />
+      <recent name="C:\Users\Alexander\PycharmProjects\detective\data\temp" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="detective" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a069e5c6-c558-46ca-a701-43b6a8db1337" name="Changes" comment="" />
+      <created>1669911120509</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1669911120509</updated>
+      <workItem from="1669911123134" duration="237000" />
+      <workItem from="1670972994062" duration="4491000" />
+      <workItem from="1670978053396" duration="61000" />
+      <workItem from="1670978122345" duration="52000" />
+      <workItem from="1670978182703" duration="463000" />
+      <workItem from="1670978658530" duration="9364000" />
+      <workItem from="1671063657818" duration="8967000" />
+    </task>
+    <task id="LOCAL-00001" summary="initial commit.">
+      <created>1669911309475</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1669911309475</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="initial commit." />
+    <option name="LAST_COMMIT_MESSAGE" value="initial commit." />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/detective$main.coverage" NAME="main Coverage Results" MODIFIED="1671077826007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>
