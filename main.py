@@ -10,22 +10,24 @@ from utils.data.transforms.ToTensor import toTensor
 from utils.converter.JsonConverter import decode_file
 from utils.scanner.FileScanner import read_files
 
+from torch.utils.tensorboard import SummaryWriter
+
+writer = SummaryWriter('runs/motion')
+
 
 class Net(torch.nn.Module):
     def __init__(self, input_size, hidden_size):
         super(Net, self).__init__()
 
         self.rnn = torch.nn.RNN(input_size=input_size, hidden_size=hidden_size, batch_first=True)
-        self.l1 = torch.nn.Linear(in_features=hidden_size, out_features=int(hidden_size / 2))
-        self.l2 = torch.nn.Linear(in_features=int(hidden_size / 2), out_features=int(hidden_size / 4))
-        self.l3 = torch.nn.Linear(in_features=int(hidden_size / 4), out_features=1)
+        self.l1 = torch.nn.Linear(in_features=hidden_size, out_features=1)
         self.sigmoid = torch.nn.Sigmoid()
 
     def forward(self, x):
         out, hidden = self.rnn(x)
         out = self.l1(out[:, -1, :])
-        out = self.l2(out)
-        out = self.l3(out)
+        # out = self.l2(out)
+        # out = self.l3(out)
         out = self.sigmoid(out)
         return out
 
@@ -52,6 +54,13 @@ class MovementDataSet(Dataset):
 
 def train(model, device, train_loader, optimizer, criterion, epoch):
     model.train()
+    test_loss = 0.0
+    true_positives = 0
+    true_negatives = 0
+    false_positives = 0
+    false_negatives = 0
+    positive_targets = 0
+    negative_targets = 0
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
@@ -59,11 +68,37 @@ def train(model, device, train_loader, optimizer, criterion, epoch):
         loss = criterion(output, target.view(output.shape).type(torch.float))
         loss.backward()
         optimizer.step()
+        for i in range(len(output)):
+            if target[i] == 1:
+                positive_targets += 1
+                if output[i] > 0.6:
+                    true_positives += 1
+                else:
+                    false_negatives += 1
+            elif target[i] == 0:
+                negative_targets += 1
+                if output[i] < 0.6:
+                    true_negatives += 1
+                else:
+                    false_positives += 1
 
         if batch_idx % 205 == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
-                       100. * batch_idx / len(train_loader), loss.item()))
+                100.0 * batch_idx / len(train_loader), loss.item()))
+
+    test_loss /= len(train_loader.dataset)
+
+    samples = len(train_loader.dataset)
+    correct = true_positives + true_negatives
+    precision = true_positives / (true_positives + false_positives)
+    recall = true_positives / (true_positives + false_negatives)
+    f1_score = 2 * (precision * recall) / (precision + recall)
+    writer.add_scalar('training loss', test_loss, epoch)
+    writer.add_scalar('accuracy', 100. * correct / samples, epoch)
+    writer.add_scalar('Precision', precision, epoch)
+    writer.add_scalar('Recall', recall, epoch)
+    writer.add_scalar('F1 score', f1_score, epoch)
 
 
 def test(model, device, test_loader, criterion):
@@ -128,7 +163,6 @@ def test(model, device, test_loader, criterion):
         true_positives,
         true_negatives
 
-
     ))
     # print('Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'
     #       ''.format(
@@ -184,7 +218,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model = Net(features, 128).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001, weight_decay=1e-5)
     criterion = torch.nn.BCELoss()
     epochs = 500
 
@@ -192,6 +226,9 @@ def main():
         train(model, device, train_loader, optimizer, criterion, epoch)
 
     test(model, device, test_loader, criterion)
+
+    writer.add_graph(model, iter(test_loader).__next__()[0].to(device))
+    writer.close()
 
 
 if __name__ == '__main__':
