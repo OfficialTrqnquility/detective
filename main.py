@@ -16,10 +16,10 @@ writer = SummaryWriter('runs/motion')
 
 
 class Net(torch.nn.Module):
-    def __init__(self, input_size, hidden_size):
+    def __init__(self, input_size, hidden_size, layers=2):
         super(Net, self).__init__()
 
-        self.rnn = torch.nn.RNN(input_size=input_size, hidden_size=hidden_size, batch_first=True)
+        self.rnn = torch.nn.RNN(input_size=input_size, hidden_size=hidden_size, num_layers=layers, batch_first=True)
         self.l1 = torch.nn.Linear(in_features=hidden_size, out_features=1)
         self.sigmoid = torch.nn.Sigmoid()
 
@@ -85,7 +85,7 @@ def train(model, device, train_loader, optimizer, criterion, epoch):
         if batch_idx % 205 == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
-                100.0 * batch_idx / len(train_loader), loss.item()))
+                       100.0 * batch_idx / len(train_loader), loss.item()))
 
     test_loss /= len(train_loader.dataset)
 
@@ -220,7 +220,7 @@ def main():
     model = Net(features, 128).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001, weight_decay=1e-5)
     criterion = torch.nn.BCELoss()
-    epochs = 500
+    epochs = 10000
 
     for epoch in range(1, epochs + 1):
         train(model, device, train_loader, optimizer, criterion, epoch)
@@ -231,5 +231,129 @@ def main():
     writer.close()
 
 
+def eval():
+    data = []
+
+    for directory in read_files('data/motion/'):
+        for file in read_files(directory + '/'):
+            file_data = []
+            for tick in decode_file(open(file)):
+                tick = preprocessData(tick)
+                file_data.append(tick)
+            data.append((toTensor(file_data), 1 if directory.split("/")[-1] == 'hacking' else 0))
+
+    random.shuffle(data)
+    train_data = data[:int((len(data) + 1) * .80)]  # Remaining 80% to training set
+    test_data = data[int((len(data) + 1) * .80):]
+    train_set = MovementDataSet(train_data)
+    test_set = MovementDataSet(test_data)
+    train_loader = DataLoader(train_set, batch_size=8, shuffle=True, collate_fn=pack_batch)
+    test_loader = DataLoader(test_set, batch_size=8, shuffle=True, collate_fn=pack_batch)
+
+    features = len(train_set.__getitem__(0)[0][0])
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    best = [0, 0, 0]
+
+    for layer in range(2, 6):
+        for neuron in range(64, 200):
+            results = []
+            for i in range(3):
+
+                model = Net(features, 128).to(device)
+                optimizer = torch.optim.Adam(model.parameters(), lr=0.0001, weight_decay=1e-5)
+                criterion = torch.nn.BCELoss()
+                epochs = 200
+
+                for epoch in range(1, epochs + 1):
+                    eval_train(model, device, train_loader, optimizer, criterion, epoch)
+
+                response = eval_test(model, device, test_loader, criterion)
+                if not results:
+                    results = response
+                else:
+                    results = [a + b for a, b in zip(results, response)]
+
+            results = [i / 3 for i in results]
+            if best[2] < results[10]:
+                best = [layer, neuron, results[10]]
+
+            print('''
+            ----------------------------------
+            Layers: {}
+            Neurons: {}
+
+            Average Loss: {:.4f}
+            Accuracy: {:.0f}/{:.0f} ({:.0f}%)
+            Precision: {:.0f}/{:.0f} ({:.0f}%)
+            Recall: {:.0f}/{:.0f} ({:.0f}%)
+            F1 Score: {}
+            false positives: {:.0f}
+            false negatives: {:.0f}
+            true positives: {:.0f}
+            true negatives: {:.0f}
+            ----------------------------------
+            '''.format(layer, neuron, *results))
+    print(best)
+
+
+def eval_train(model, device, train_loader, optimizer, criterion, epoch):
+    model.train()
+    for batch_idx, (data, target) in enumerate(train_loader):
+        data, target = data.to(device), target.to(device)
+        optimizer.zero_grad()
+        output = model(data)
+        loss = criterion(output, target.view(output.shape).type(torch.float))
+        loss.backward()
+        optimizer.step()
+
+
+def eval_test(model, device, test_loader, criterion):
+    test_loss = 0.0
+    true_positives = 0
+    true_negatives = 0
+    false_positives = 0
+    false_negatives = 0
+    positive_targets = 0
+    negative_targets = 0
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            test_loss += criterion(output, target.view(output.shape).type(torch.float32)).item()
+
+            for i in range(len(output)):
+                if target[i] == 1:
+                    positive_targets += 1
+                    if output[i] > 0.6:
+                        true_positives += 1
+                    else:
+                        false_negatives += 1
+                elif target[i] == 0:
+                    negative_targets += 1
+                    if output[i] < 0.6:
+                        true_negatives += 1
+                    else:
+                        false_positives += 1
+
+    test_loss /= len(test_loader.dataset)
+    samples = len(test_loader.dataset)
+    correct = true_positives + true_negatives
+    wrong = false_positives + false_negatives
+    precision = (true_positives / (true_positives + false_positives)) if (true_positives != 0) else 0.0
+    recall = (true_positives / (true_positives + false_negatives)) if (true_positives != 0) else 0.0
+    f1_score = (2 * (precision * recall) / (precision + recall)) if ((precision * recall) != 0) else 0.0
+
+    return [test_loss,
+            correct, samples, 100. * correct / len(test_loader.dataset),
+            true_positives, true_positives + false_positives, 100. * precision,
+            true_positives, positive_targets, 100. * recall,
+            f1_score,
+            false_positives,
+            false_negatives,
+            true_positives,
+            true_negatives]
+
+
 if __name__ == '__main__':
-    main()
+    eval()
